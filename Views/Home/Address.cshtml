@@ -1,57 +1,73 @@
 ﻿@{
-    ViewData["Title"] = "Address";
+    ViewData["Title"] = "地址";
 }
 
-<h1>Address</h1>
+<h1>地址</h1>
 <select id="selectCity">
-    <option value="a">Item1</option>
-    <option value="b">Item2</option>
-    <option value="c">Item3</option>
-    <option value="d">Item4</option>
+    <option value="">請選擇城市</option>
 </select>
 
-@section Styles{
+<select id="selectSiteId">
+    <option value="">請選擇 SITE_ID</option>
+</select>
+
+<select id="selectRoad">
+    <option value="">請選擇道路</option>
+</select>
+
+@section Styles {
     <style>
-
-
+        /* 此處可以添加樣式 */
     </style>
 }
-@section Scripts{
+@section Scripts {
     <script>
         const selCity = document.querySelector('#selectCity');
+        const selSiteId = document.querySelector('#selectSiteId');
+        const selRoad = document.querySelector('#selectRoad');
 
-        //ajax
+        let cityData = [];
+
+        // 使用 AJAX 獲取數據並更新城市下拉選單
         (async () => {
+            // 發送 GET 請求到伺服器，獲取數據
             const response = await fetch('@Url.Content("~/api/cities")');
+
+            // 將回應的 JSON 數據解析為 JavaScript 陣列
             const datas = await response.json();
-            const cities = datas.map(city => `<option value="${city}">${city}</option>`);
-            selCity.innerHTML = cities.join("");
+            cityData = datas;
+
+            // 將每個城市轉換為 <option> 元素的字串
+            const cities = [...new Set(datas.map(item => item.city))]
+                .map(city => `<option value="${city}">${city}</option>`);
+            selCity.innerHTML = `<option value="">請選擇城市</option>` + cities.join("");
         })();
 
-        //載入鄉鎮區
-        const loadDistricts = () => {
-            //console.log(selCity.value);
-            console.log(selCity.selectedIndex);
-            console.log(selCity.options[selCity.selectedIndex].value);
-            console.log(selCity.options[selCity.selectedIndex].text);
-        }
+        // 當選擇城市時更新 SITE_ID 下拉選單
+        const loadSiteIds = () => {
+            const selectedCity = selCity.value;
+            const filteredData = cityData.filter(item => item.city === selectedCity);
 
-        selCity.addEventListener('change', loadDistricts);
+            const siteIds = [...new Set(filteredData.map(item => item.siteId.slice(-3)))]
+                .map(siteId => `<option value="${siteId}">${siteId}</option>`);
+            selSiteId.innerHTML = `<option value="">請選擇 SITE_ID</option>` + siteIds.join("");
 
+            // 清空道路下拉選單
+            selRoad.innerHTML = `<option value="">請選擇道路</option>`;
+        };
 
+        // 當選擇 SITE_ID 時更新道路下拉選單
+        const loadRoads = () => {
+            const selectedSiteId = selSiteId.value;
+            const filteredData = cityData.filter(item => item.siteId.slice(-3) === selectedSiteId);
 
+            const roads = [...new Set(filteredData.map(item => item.road))]
+                .map(road => `<option value="${road}">${road}</option>`);
+            selRoad.innerHTML = `<option value="">請選擇道路</option>` + roads.join("");
+        };
 
-        //fetch('https://od.moi.gov.tw/api/v1/rest/datastore/301000000A-000917-035')
-        //    .then(response => response.json())
-        //    .then(data => {
-        //        console.log(data); // 在控制台中輸出獲取的資料
-        //        // 在這裡進行對獲取的資料的任何處理或操作
-        //    })
-        //    .catch(error => {
-        //        console.error('Fetch error:', error); // 如果發生錯誤，則在控制台中輸出錯誤信息
-        //    });
-
-
+        // 當選擇城市改變時觸發載入對應 SITE_ID 的函數
+        selCity.addEventListener('change', loadSiteIds);
 
     </script>
 }

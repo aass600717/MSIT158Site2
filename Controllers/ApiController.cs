@@ -7,7 +7,8 @@ namespace MSIT158Site.Controllers
     public class ApiController : Controller
     {
      private readonly MyDBContext _context;
-        public ApiController(MyDBContext context)
+        
+        public ApiController(MyDBContext context)// 建構函數，通過依賴注入注入資料庫上下文
         {
             _context = context;
         }
@@ -22,21 +23,25 @@ namespace MSIT158Site.Controllers
 
         public IActionResult Cities()
         {
-            var cities = _context.Addresses.Select(a => a.City).Distinct();
-            return Json(cities);
+            var cities = _context.Addresses.Select(a => new { a.City, a.SiteId, a.Road }).ToList().Distinct();
+            return Json(cities);// 以 JSON 格式返回城市清單
         }
-        public IActionResult Avatar(int id =1)
+        public IActionResult Avatar(int id = 1)
         {
+            // 從資料庫中查找對應 id 的會員資料
             Member? member = _context.Members.Find(id);
-            if(member != null)
+            // 如果找到會員資料
+            if (member != null)
             {
+                // 取得會員的圖片資料
                 byte[] img = member.FileData;
-                if(img != null)
+                // 如果圖片資料不為空，返回圖片
+                if (img != null)
                 {
                     return File(img, "image/jpeg");
                 }
-
             }
+            // 如果沒有找到會員資料或圖片資料，返回 404 Not Found
             return NotFound();
         }
 
