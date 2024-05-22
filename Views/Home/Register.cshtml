@@ -2,6 +2,7 @@
     ViewData["Title"] = "Register";
 }
 
+
 <div class="row">
     <div class="col-3"></div>
     <div class="col-6">
@@ -9,7 +10,8 @@
         <form method="post" action="~/api/register" id="userForm">
             <div class="mb-3">
                 <label for="InputName" class="form-label">姓名</label>
-                <input type="text" class="form-control" id="InputName" name="userName">
+                <input type="text" class="form-control" id="InputName" name="name">
+
             </div>
             <div class="mb-3">
                 <label for="InputEmail" class="form-label">電子郵件</label>
@@ -19,56 +21,71 @@
                 <label for="InputAge" class="form-label">年紀</label>
                 <input type="number" class="form-control" id="InputAge" name="age">
             </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">圖像</label>
+                <input class="form-control" type="file" id="formFile" name="avatar">
+            </div>
+
             <button type="submit" class="btn btn-primary" id="buttonSubmit">送出</button>
         </form>
         <div id="div1" class="alert alert-info mt-3"></div>
+
     </div>
     <div class="col-3"></div>
 </div>
 
 @section Styles{
     <style>
-        /* 這裡可以添加自定義樣式 */
+
+
     </style>
 }
-
 @section Scripts{
     <script>
-        // 選取結果顯示區域的 div
         const divResult = document.querySelector('#div1');
-        // 選取提交按鈕
         const btnSubmit = document.querySelector('#buttonSubmit');
-        // 選取輸入欄位
         const inpName = document.querySelector('#InputName');
         const inpEmail = document.querySelector('#InputEmail');
         const inpAge = document.querySelector('#InputAge');
 
-        // 監聽提交按鈕的點擊事件
-        btnSubmit.addEventListener('click', async (evt) => {
-            evt.preventDefault(); // 防止預設行為的發生
 
-            // 將表單資料放進 FormData
+
+        btnSubmit.addEventListener('click', async (evt) => {
+            evt.preventDefault(); //防止預設行為的發生
+
+            //將資料放進FormData
             const myForm = document.querySelector('#userForm');
             const formData = new FormData(myForm);
 
-            // 設定請求的 URL
+            //formData.append("password", "12345678");
+            //讀出formData中的資料
+            //for(const pair of formData.entries()){
+            //    console.log(`${pair[0]}:${pair[1]}`);
+            //}
             const url = '@Url.Content("~/api/register/")';
             const response = await fetch(url, {
                 method: 'POST',
                 body: formData
             });
 
-            // 取得回應資料並顯示
             const data = await response.text();
             divResult.textContent = data;
-        });
 
-                // 示例代碼，非必要時可以刪除
-                // (async ()=>{
-                //     const url = '@Url.Content("~/api/register")?id=1&age=29&name=Mary';
-                //     const response = await fetch(url);
-                //     const data = await response.text();
-                //     divResult.innerHTML = data;
-                // })();
+
+            //console.log(inpName.value);
+            //const url = `@Url.Content("~/api/register/")?email=${inpEmail.value}&age=${inpAge.value}&name=${inpName.value}`;
+
+            //const response =  await fetch(url);
+            //const data = await response.text();
+            //divResult.textContent = data;
+
+        })
+
+              //(async ()=>{
+              //      const url = '@Url.Content("~/api/register")?id=1&age=29&name=Mary';
+              //      const response = await fetch(url);
+              //      const data = await response.text();
+              //      divResult.innerHTML = data;
+              //})();
     </script>
 }
