@@ -16,15 +16,11 @@ namespace MSIT158Site.Controllers
         }
 
         public IActionResult Index()
-        {          
+        {
             return View(_context.Categories);
         }
-        public IActionResult JSONTest()
-        {
-            return View();
-        }
 
-        public IActionResult Register()
+        public IActionResult First()
         {
             return View();
         }
@@ -32,8 +28,11 @@ namespace MSIT158Site.Controllers
         {
             return View();
         }
-
-        public IActionResult First()
+        public IActionResult Register()
+        {
+            return View();
+        }
+        public IActionResult JSONTest()
         {
             return View();
         }
