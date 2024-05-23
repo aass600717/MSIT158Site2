@@ -15,6 +15,10 @@ namespace MSIT158Site.Controllers
             _context = context;
         }
 
+        public IActionResult CallAPI()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             return View(_context.Categories);
