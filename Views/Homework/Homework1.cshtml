@@ -56,29 +56,36 @@
 @section Scripts {
     <script src="~/js/travel.js"></script>
     <script>
+        // 選取 class 為 'cardContainer' 的元素
         const cardContainer = document.querySelector('.cardContainer');
         let string = "";
 
+        // 遍歷 spots.CommonFormat.Section 中的每個項目
         spots.CommonFormat.Section.forEach((item) => {
+            // 檢查 item.file, item.file.img 是否存在且長度大於 0 並且 item.file.img[0].text 是否存在
             if (item.file && item.file.img && item.file.img.length > 0 && item.file.img[0].text) {
+                // 將每個符合條件的項目以 HTML 字串形式追加到 string 變量中
                 string += `
                         <div class="col">
                             <div class="card h-100">
-                                  <img src=${item.file.img[0].text} class="card-img-top" alt="...">
+                                <img src=${item.file.img[0].text} class="card-img-top" alt="...">
                                 <div class="card-body">
-                                            <h5 class="card-title">${item.stitle}</h5>
+                                    <h5 class="card-title">${item.stitle}</h5>
                                     <p class="card-text">${item.xbody.substring(0, 50)}...</p>
                                 </div>
                             </div>
                         </div>
-                    `
+                    `;
+            } else {
+                // 如果圖片數據無效或丟失，則在控制台打印錯誤信息
+                console.log('找不到圖片檔案:', item);
             }
-            else {
-                console.log('Invalid or missing image data for item:', item);
-            }
-        })
+        });
+
+        // 將生成的 HTML 字串插入到 cardContainer 元素中
         cardContainer.innerHTML = string;
     </script>
+
 }
 <div class="container-md">
     <div class="row row-cols-md-3 g-4 cardContainer">
