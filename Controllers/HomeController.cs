@@ -15,7 +15,16 @@ namespace MSIT158Site.Controllers
             _context = context;
         }
 
+        public IActionResult AutoComplete()
+        {
+            return View();
+        }
         public IActionResult CallAPI()
+        {
+            return View();
+        }
+
+        public IActionResult History()
         {
             return View();
         }

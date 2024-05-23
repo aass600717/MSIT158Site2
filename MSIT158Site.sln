@@ -5,8 +5,6 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIT158Site", "MSIT158Site.csproj", "{11BA0F4C-67C8-4FC1-9F7C-A6BBE082ECCA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIT158API", "..\ajax\MSIT158API\MSIT158API\MSIT158API.csproj", "{32D42A8F-F7AD-4FFD-86B7-FA9A12504129}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{11BA0F4C-67C8-4FC1-9F7C-A6BBE082ECCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11BA0F4C-67C8-4FC1-9F7C-A6BBE082ECCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11BA0F4C-67C8-4FC1-9F7C-A6BBE082ECCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32D42A8F-F7AD-4FFD-86B7-FA9A12504129}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32D42A8F-F7AD-4FFD-86B7-FA9A12504129}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32D42A8F-F7AD-4FFD-86B7-FA9A12504129}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32D42A8F-F7AD-4FFD-86B7-FA9A12504129}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
