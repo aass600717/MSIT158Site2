@@ -32,6 +32,13 @@
         </nav>
     </div>
 
+    <div class="container col-2">
+        <select class="form-select w-75" aria-label="Default select example" id="formSelectSort">
+            <option disabled selected>編號排序</option>
+            <option>編號升冪</option>
+            <option>編號降冪</option>
+        </select>
+    </div>
 
     <div class="col-md-4">
         <input style="width:200px;" type="search" placeholder="搜尋景點資料" class="form-control" id="inputSearch" />
@@ -40,24 +47,29 @@
 
 @section Styles {
     <style>
-
+        #ul1{
+            max-width: 350px;
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
     </style>
 }
 
 @* 分類搜尋按鈕 *@
 <nav aria-label="Page navigation example">
     <ul class="pagination">
-        <li class="page-item"><a class="page-link" data-keyword="養生溫泉">養生<br />溫泉</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="藍色公路">藍色<br />公路</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="歷史建築">歷史<br />建築</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="藝文館所">藝文<br />館所</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="單車遊蹤">單車<br />遊蹤</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="戶外踏青">戶外<br />踏青</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="宗教信仰">宗教<br />信仰</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="其他">其<br />他</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="親子共遊">親子<br />共遊</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="公共藝術">公共<br />藝術</a></li>
-        <li class="page-item"><a class="page-link" data-keyword="春季活動">春季<br />活動</a></li>
+        <li style="width:100px;text-align:center"page-item"><a class="page-link" data-keyword="養生溫泉">養生<br />溫泉</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="藍色公路">藍色<br />公路</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="歷史建築">歷史<br />建築</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="藝文館所">藝文<br />館所</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="單車遊蹤">單車<br />遊蹤</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="戶外踏青">戶外<br />踏青</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="宗教信仰">宗教<br />信仰</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="其他">其<br />他</a></li>
+        <li style="width:100px;text-align:center" class="page-item"><a class="page-link" data-keyword="親子共遊">親子<br />共遊</a></li>
+        <li style="width:125px;text-align:center" class="page-item"><a class="page-link" data-keyword="公共藝術">公共<br />藝術</a></li>
+        <li style="width:125px;text-align:center" class="page-item"><a class="page-link" data-keyword="春季活動">春季<br />活動</a></li>
     </ul>
 </nav>
 <div class="row row-cols-1 row-cols-md-3 g-4" id="div1">
@@ -69,6 +81,7 @@
         const divSpots = document.querySelector('#div1');
         const ulPaging = document.querySelector('#ul1');
         const inpSearch = document.querySelector('#inputSearch');
+        const formSelectSort = document.querySelector('#formSelectSort');
 
         // 搜尋參數初始設置
         const searchData = {
@@ -166,7 +179,16 @@
                 dropdownButton.textContent = `每頁${pageSize}筆資料篩選`;
             });
         });
-
-
+        //排序
+        formSelectSort.addEventListener('change', async (e) => {
+            if (e.target.value === '景點編號升冪') {
+                searchData.sortBy = 'SpotId';
+                searchData.sortType = 'asc';
+            } else if (e.target.value === '景點編號降冪') {
+                searchData.sortBy = 'SpotId';
+                searchData.sortType = 'desc';
+            }
+            await loadSpots();
+        })
     </script>
 }
