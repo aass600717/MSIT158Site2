@@ -25,5 +25,14 @@ namespace MSIT158Site.Controllers
         {
             return View();
         }
+
+        public IActionResult homework3()
+        {
+            return View();
+        }
+        public IActionResult homework4()
+        {
+            return View();
+        }
     }
 }

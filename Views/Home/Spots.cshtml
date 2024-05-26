@@ -21,17 +21,18 @@
 
 @section Styles {
     <style>
-
+        
 
     </style>
 }
 @section Scripts {
     <script>
+        // DOM 元素選取
         const divSpots = document.querySelector('#div1');
         const ulPaging = document.querySelector('#ul1');
         const inpSearch = document.querySelector('#inputSearch');
 
-
+        // 搜尋參數初始設置
         const searchData = {
             "categoryId": 0,
             "keyword": "公園",
@@ -40,13 +41,17 @@
             "sortBy": "SpotId",
             "sortType": "asc"
         };
-        const pagingHandler = page => {
-            searchData.page = page;
-            loadSpots();
-        }
-        const loadSpots = async () => {
-            const url = 'https://localhost:7144/api/Spots';
 
+        // 分頁處理函數
+        const pagingHandler = page => {
+            searchData.page = page; // 更新當前頁數
+            loadSpots(); // 重新加載景點資料
+        };
+        // 加載景點資料的異步函數
+        const loadSpots = async () => {
+            const url = 'https://localhost:7204/api/Spots'; // API 端點
+
+            // 發送 POST 請求到服務端
             const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(searchData),
@@ -54,51 +59,47 @@
                     'Content-Type': 'application/json'
                 }
             });
-            const data = await response.json();
-            console.log(data);
+            const data = await response.json(); // 解析 JSON 數據
+            console.log(data); // 輸出資料到控制台
 
-
-
-            //顯示景點資料
+            // 生成景點卡片的 HTML 內容並顯示
             const spots = data.spotsResult.map(spot => {
                 const { spotId, spotTitle, spotDescription, address, spotImage } = spot;
                 return (`
-                                                               <div class="col">
-                                                <div class="card">
-                                                            <img src="${spotImage}" class="card-img-top" alt="${spotTitle}">
-                                                    <div class="card-body">
-                                                                        <h5 class="card-title">${spotId} ${spotTitle}</h5>
-                                                                                <p class="card-text">${spotDescription.length <= 100 ? spotDescription : spotDescription.substring(0, 100)}</p>
-                                                    </div>
-                                                    <div class="card-footer">
-                                                                        <small class="text-body-secondary">${address}</small>
-                                                    </div>
-                                                </div>
-                                            </div>
+                    <div class="col">
+                        <div class="card">
+                            <img src="${spotImage}" class="card-img-top" alt="${spotTitle}">
+                            <div class="card-body">
+                                <h5 class="card-title">${spotId} ${spotTitle}</h5>
+                                <p class="card-text">${spotDescription.length <= 100 ? spotDescription : spotDescription.substring(0, 100)}</p>
+                            </div>
+                            <div class="card-footer">
+                              <small class="text-body-secondary">${address}</small>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+            divSpots.innerHTML = spots.join(""); // 將景點卡片的 HTML 插入到頁面
 
-                                                       `)
-            })
-            divSpots.innerHTML = spots.join("");
-
-            //顯示分頁按鈕
+            // 生成分頁按鈕並顯示
             let liPages = "";
             for (let i = 1, max = data.totalPages; i <= max; i++) {
-                liPages += `<li class="page-item" onclick="pagingHandler(${i})"><a class="page-link">${i}</a></li>`
+                liPages += `<li class="page-item" onclick="pagingHandler(${i})"><a class="page-link">${i}</a></li>`;
             }
             ulPaging.innerHTML = liPages;
-        }
+        };
 
-        // (async ()=>{
+        // 加載景點資料
         loadSpots();
-        //  })();
 
-
-
+        // 搜尋欄鍵盤事件監聽，當按下 Enter 鍵時更新關鍵字並重新加載景點
         inpSearch.addEventListener('keydown', event => {
-            if (event.keyCode === 13) {
-                searchData.keyword = event.target.value;
-                loadSpots();
+            if (event.keyCode === 13) { // 判斷是否為 Enter 鍵
+                searchData.keyword = event.target.value; // 更新搜索關鍵字
+                loadSpots(); // 重新加載景點
             }
-        })
+        });
+
     </script>
 }

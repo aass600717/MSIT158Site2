@@ -1,0 +1,172 @@
+﻿@{
+    ViewData["Title"] = "Spots";
+}
+
+<h1>台北市景點</h1>
+<div class="row">
+
+    <div class="col-md-2">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                每頁幾筆資料篩選
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" data-size="1">每頁1筆資料</a></li>
+                <li><a class="dropdown-item" data-size="2">每頁2筆資料</a></li>
+                <li><a class="dropdown-item" data-size="3">每頁3筆資料</a></li>
+                <li><a class="dropdown-item" data-size="4">每頁4筆資料</a></li>
+                <li><a class="dropdown-item" data-size="5">每頁5筆資料</a></li>
+                <li><a class="dropdown-item" data-size="6">每頁6筆資料</a></li>
+                <li><a class="dropdown-item" data-size="7">每頁7筆資料</a></li>
+                <li><a class="dropdown-item" data-size="8">每頁8筆資料</a></li>
+                <li><a class="dropdown-item" data-size="9">每頁9筆資料</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <nav>
+            <ul class="pagination" id="ul1">
+                <!-- 分頁內容 -->
+            </ul>
+        </nav>
+    </div>
+
+
+    <div class="col-md-4">
+        <input style="width:200px;" type="search" placeholder="搜尋景點資料" class="form-control" id="inputSearch" />
+    </div>
+</div>
+
+@section Styles {
+    <style>
+
+    </style>
+}
+
+@* 分類搜尋按鈕 *@
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item"><a class="page-link" data-keyword="養生溫泉">養生<br />溫泉</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="藍色公路">藍色<br />公路</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="歷史建築">歷史<br />建築</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="藝文館所">藝文<br />館所</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="單車遊蹤">單車<br />遊蹤</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="戶外踏青">戶外<br />踏青</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="宗教信仰">宗教<br />信仰</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="其他">其<br />他</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="親子共遊">親子<br />共遊</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="公共藝術">公共<br />藝術</a></li>
+        <li class="page-item"><a class="page-link" data-keyword="春季活動">春季<br />活動</a></li>
+    </ul>
+</nav>
+<div class="row row-cols-1 row-cols-md-3 g-4" id="div1">
+</div>
+
+@section Scripts {
+    <script>
+        // DOM 元素選取
+        const divSpots = document.querySelector('#div1');
+        const ulPaging = document.querySelector('#ul1');
+        const inpSearch = document.querySelector('#inputSearch');
+
+        // 搜尋參數初始設置
+        const searchData = {
+            "categoryId": 0,
+            "keyword": "台北市",
+            "page": 1,
+            "pageSize": 9,
+            "sortBy": "SpotId",
+            "sortType": "asc"
+        };
+
+        // 加載景點資料的非同步函數
+        const loadSpots = async (searchKeyword = searchData.keyword) => {
+            searchData.keyword = searchKeyword; // 更新搜索關鍵字
+            const url = 'https://localhost:7204/api/Spots'; // API 端點
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(searchData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) throw new Error('Network response was not ok.');
+                const data = await response.json(); // 解析 JSON 數據
+                updateUI(data); // 更新 UI
+            } catch (error) {
+                console.error('Fetch error:', error); // 輸出錯誤到控制台
+            }
+        };
+
+        // 文檔載入完成後執行初始化搜尋
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSpots();  // 初始載入預設的景點資料
+        });
+
+        // 更新 UI 的函數
+        function updateUI(data) {
+            const spots = data.spotsResult.map(spot => {
+                const { spotId, spotTitle, spotDescription, address, spotImage } = spot;
+                return (`
+                            <div class="col">
+                                <div class="card">
+                                    <img src="${spotImage}" class="card-img-top" alt="${spotTitle}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${spotId} ${spotTitle}</h5>
+                                        <p class="card-text">${spotDescription.length <= 100 ? spotDescription : spotDescription.substring(0, 100) + '...'}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <small class="text-body-secondary">${address}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+            });
+            divSpots.innerHTML = spots.join("");
+            let liPages = "";
+            for (let i = 1, max = data.totalPages; i <= max; i++) {
+                liPages += `<li class="page-item"><a class="page-link" onclick="pagingHandler(${i})">${i}</a></li>`;
+            }
+            ulPaging.innerHTML = liPages;
+        }
+
+        // 分頁處理函數
+        function pagingHandler(page) {
+            searchData.page = page; // 更新當前頁數
+            loadSpots(); // 重新加載景點資料
+        };
+
+        // 搜尋欄鍵盤事件監聽
+        inpSearch.addEventListener('keydown', event => {
+            if (event.keyCode === 13) { // 判斷是否為 Enter 鍵
+                loadSpots(event.target.value); // 使用搜索框的值重新加載景點
+            }
+        });
+
+        // 為每個分類添加點擊事件監聽
+        document.querySelectorAll('.page-link').forEach(item => {
+            item.addEventListener('click', function (event) {
+                event.preventDefault();  // 防止頁面跳轉
+                const keyword = this.getAttribute('data-keyword');  // 獲取對應的關鍵字
+                loadSpots(keyword);  // 調用搜尋函數
+            });
+        });
+
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const selectedSize = this.getAttribute('data-size'); // 從選項獲取data-size屬性
+                const pageSize = parseInt(selectedSize, 10); // 轉換為整數
+                searchData.pageSize = pageSize; // 更新頁面大小
+                loadSpots(); // 重新加載景點資料
+
+                // 更新下拉按鈕的顯示文字
+                const dropdownButton = document.querySelector('.dropdown-toggle');
+                dropdownButton.textContent = `每頁${pageSize}筆資料篩選`;
+            });
+        });
+
+
+    </script>
+}
